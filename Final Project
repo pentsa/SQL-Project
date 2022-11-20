@@ -1,0 +1,122 @@
+1. Pick one city and category of your choice and group the businesses in that city or category by their overall star rating. Compare the businesses with 2-3 stars to the businesses with 4-5 stars and answer the following questions. Include your code.
+
+I chose to compare the businesses from the food category in Toronto! 
+	
+i. Do the two groups you chose to analyze have a different distribution of hours?
+The businesses with 4-5 stars have shorter operation hours than the ones with 2-3 stars. 
+The ones with 4-5 stars open in the afternoon or noon, while the ones with 2-3 stars open in the morning.
+
+ii. Do the two groups you chose to analyze have a different number of reviews?
+Yes. The businesses with 4-5 stars have more reviews than the ones with 2-3 stars.
+         
+iii. Are you able to infer anything from the location data provided between these two groups? Explain.
+No. All the businesses have different neighborhoods and postal code. There is no obvious trend! 
+
+SQL code used for analysis:
+
+select
+B.name,
+B.neighborhood,
+B.postal_code,
+B.review_count,
+H.hours,
+-- I used the case statement to group the businesses by the star ranges to create a new column ‘rating’
+CASE
+    WHEN B.stars BETWEEN 2 AND 3 THEN '2-3 stars'
+    WHEN B.stars BETWEEN 4 AND 5 THEN '4-5 stars'
+    END AS rating
+-- I used the inner join function to find the operation hours from the hours table using the matching business_id
+from business B inner join hours H
+    on B.id = H.business_id
+-- I used the Subqueries function to find businessid from the food category in the category table
+where B.id
+    IN( 
+    select 
+    business_id
+    from category
+    where category = 'Food')
+ and city = 'Toronto' --I want to focus on Toronto
+ and rating in ('2-3 stars','4-5 stars') --only keeping the businesses within the rating criteria
+order by B.stars desc
+		
+		
+2. Group business based on the ones that are open and the ones that are closed. What differences can you find between the ones that are still open and the ones that are closed? List at least two differences and the SQL code you used to arrive at your answer.
+		
+i. Difference 1: The average number of reviews for the businesses that are open are more than those that are closed. 
+         
+         
+ii. Difference 2: There are more businesses that are still open, comparing to the number of businesses that are closed. 
+         
++--------+------------------+--------+---------------+-----------------+
+| status | total_businesses | cities | average_stars | average_reviews |
++--------+------------------+--------+---------------+-----------------+
+| closed |             1520 |    144 | 3.52039473684 |   23.1980263158 |
+| open   |             8480 |    351 | 3.67900943396 |   31.7570754717 |
++--------+------------------+--------+---------------+-----------------+         
+         
+SQL code used for analysis:
+
+    SELECT 
+        case  -- I used the CASE statement to list out the open and close status for the businesses 
+            when is_open is '1' then 'open'
+            else 'closed'
+            end status,
+        count(distinct id) as total_businesses,  -- I count the number of businesses that are open and close
+        count(distinct city) as cities, -- I count the number of cities for the businesses that are open and close
+        avg(stars) as average_stars, -- I count the average number of stars for the businesses that are open and close
+        avg(review_count) as average_reviews -- I count the average number of reviews for the businesses that are open and close
+    From business
+    Group By is_open -- grouping by the status of the businesses
+
+	
+3. For this last part of your analysis, you are going to choose the type of analysis you want to conduct on the Yelp dataset and are going to prepare the data for analysis.
+
+Ideas for analysis include: Parsing out keywords and business attributes for sentiment analysis, clustering businesses to find commonalities or anomalies between them, predicting the overall star rating for a business, predicting the number of fans a user will have, and so on. These are just a few examples to get you started, so feel free to be creative and come up with your own problem you want to solve. Provide answers, in-line, to all of the following:
+	
+i. Indicate the type of analysis you chose to do:
+I decided to comparing the users with most fans and least fans. I want to know the factors that make users gaining their fans.  The popular users are the ones with more than 100 fans, while the unpopular users are the ones without any fans. 
+         
+ii. Write 1-2 brief paragraphs on the type of data you will need for your analysis and why you chose that data:
+For my analysis, I used user table. I want focus on the properties from the user table to understand the factors that make an user popular. 
+
+I retrieved the data in the way listed below
+	•	user table: number of fans, number of reviews, yelping since date, average stars, average_stars, averge_useful, averge_funny, averge_cool
+
+I grouped the data into ‘popular’ and ‘unpopular’ users, and average out the data for the popular and unpopular groups.
+The number of fans are used to qualify whether the user is popular or unpopular. 
+The rest columns are the factors I want to investigate to find the anomalies between the 2 groups.
+As shown in my result, 
+The popular users tend to be on yelp for a longer period of time, and they have posted a lot of reviews that tend to receive more feedbacks as being ‘useful’, ‘funny’ and ‘cool’.  
+When looking at the stars, there doesn’t seem to be a difference. In other words, the stars coming from the users won’t affect their popularity. 
+            
+                  
+iii. Output of your finished dataset:
++------------+-----------+--------------+-----------------+---------------+---------------+---------------+----------------+----------------+
+| popularity | count(id) | average_fans | average_reviews | average_years | average_stars | averge_useful |   averge_funny |    averge_cool |
++------------+-----------+--------------+-----------------+---------------+---------------+---------------+----------------+----------------+
+| popular    |        16 |       189.75 |           891.5 |       12.6875 |         3.835 |     11627.375 |        10047.0 |     10954.0625 |
+| unpopular  |      7707 |          0.0 |   7.42584663293 | 8.72803944466 | 3.66935253665 | 2.60360711042 | 0.784092383547 | 0.470221876216 |
++------------+-----------+--------------+-----------------+---------------+---------------+---------------+----------------+----------------+
+         
+iv. Provide the SQL code you used to create your final dataset:
+
+select 
+case 
+	when fans > 100 then 'popular'
+	when fans = 0 then 'unpopular'
+	else null
+	end popularity,
+count(id),
+avg(u.fans) as average_fans,
+avg(u.review_count) as average_reviews,
+avg(STRFTIME('%Y','now') - STRFTIME('%Y',u.yelping_since)) as average_years,
+avg(u.average_stars) as average_stars,
+avg(useful) as averge_useful,
+avg(funny) as averge_funny,
+avg(cool) as averge_cool
+from user u 
+where popularity is not null
+group by popularity 
+
+
+
