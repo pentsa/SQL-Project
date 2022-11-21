@@ -13,7 +13,7 @@ This projdct aims to investigate the buisnesses profile and user profile on Yelp
 
   - <img width="1293" alt="截圖 2022-11-21 下午2 19 38" src="https://user-images.githubusercontent.com/117743186/202979150-db0e6de2-1daa-4cda-a140-5bb9f48f0c87.png">
 
-##Content 
+## Content 
 - The entity relationship (ER) diagram for the Yelp database
   - <img width="655" alt="截圖 2022-11-21 下午2 33 46" src="https://user-images.githubusercontent.com/117743186/202981240-4d939fb9-2d91-49c9-baad-4b3d43213de0.png">
  
