@@ -5,8 +5,24 @@ This projdct aims to investigate the buisnesses profile and user profile on Yelp
 ## Features
 - Database import
 - Retriving for the buisness profiles from the food category in Toronto
--- Defining the businesses with high and low ratings 
--- Filtering for the location data for the target buisnesses
--- Filtering for the number of reviews for the target buisnesses
+  - Defining the businesses with high and low ratings 
+  - Filtering for the location data for the target buisnesses
+  - Filtering for the number of reviews for the target buisnesses
 - Retriving the user accounts from Yelp with more than 100 fans or without any fans 
--- Comparing the similarities and differences between the popular and unpopular users
+  - Comparing the similarities and differences between the popular and unpopular users
+
+  - <img width="1293" alt="截圖 2022-11-21 下午2 19 38" src="https://user-images.githubusercontent.com/117743186/202979150-db0e6de2-1daa-4cda-a140-5bb9f48f0c87.png">
+
+##Content 
+- The entity relationship (ER) diagram for the Yelp database
+  - <img width="655" alt="截圖 2022-11-21 下午2 33 46" src="https://user-images.githubusercontent.com/117743186/202981240-4d939fb9-2d91-49c9-baad-4b3d43213de0.png">
+ 
+- Comparison of food buisnesses in Toronto with high and low ratings
+  - Subqueries function was applied to find businessid from the food category in the category tabl
+  - The case statement was applied to group the businesses by the star ranges to create a new column ‘rating’
+  - The variables, such as neighborhood, postal_code, and review_count, were used as the comparisons between the two groups of buisnesses
+  - The inner join function was applied to find the operation hours from the hours table using the matching business_id
+- Comparison of user accounts with most and least fans to investigate the factors contributing to the popularity of the user accounts
+  - Case statemnet was applied to definite the popularity of the users 
+  - Users was grouped by the popularity to investigqte the anomalies between two groups
+  - Number of reviews, types of feedbacks, and years of time on Yelp were retrieved to compare between the user groups
